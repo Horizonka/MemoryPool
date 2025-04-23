@@ -19,6 +19,7 @@ namespace Kama_memoryPool
 struct Slot 
 {
     std::atomic<Slot*> next; // 原子指针
+    //使用原子指针，确保对指针的操作是原子的
 };
 
 class MemoryPool
@@ -29,7 +30,7 @@ public:
     
     void init(size_t);
 
-    void* allocate();
+    void* allocate();//负责从特定的内存池中分配固定大小的槽（slot）。
     void deallocate(void*);
 private:
     void allocateNewBlock();
@@ -55,12 +56,16 @@ public:
     static void initMemoryPool();
     static MemoryPool& getMemoryPool(int index);
 
-    static void* useMemory(size_t size)
+    static void* useMemory(size_t size)//负责根据请求的内存大小选择合适的内存池，并调用对应的 allocate 方法。
     {
         if (size <= 0)
             return nullptr;
         if (size > MAX_SLOT_SIZE) // 大于512字节的内存，则使用new
             return operator new(size);
+            //operator new(size)
+            //它与普通 new 的区别在于：
+            //普通 new : 不仅分配内存，还会调用对象的构造函数来初始化对象。
+            //operator new : 只分配内存，不调用构造函数。
 
         // 相当于size / 8 向上取整（因为分配内存只能大不能小
         return getMemoryPool(((size + 7) / SLOT_BASE_SIZE) - 1).allocate();

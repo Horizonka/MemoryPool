@@ -52,6 +52,8 @@
         "streambuf": "cpp",
         "thread": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
-    }
+        "typeinfo": "cpp",
+        "cassert": "cpp"
+    },
+    "cmake.sourceDirectory": "D:/Code/c++/memory-pool/v1"
 }
